@@ -1,9 +1,10 @@
+package com.example.lenovo.healthyheather;
+
 /**
- * Created by lenovo on 10-02-2017.
+ * Created by lenovo on 11-02-2017.
  */
 
-public class Hospital_info {
-
+public class HospitalInfo {
     private int  id;
     private  String loc_cor;
     private String location;
@@ -17,4 +18,6 @@ public class Hospital_info {
     private String email;
     private String spec;
     private String district;
+
+
 }
