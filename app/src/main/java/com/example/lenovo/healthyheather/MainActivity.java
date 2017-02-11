@@ -24,12 +24,15 @@ public class MainActivity extends AppCompatActivity {
 
     private Button b_get;
     private TrackGPS gps;
-    double longitude;
+
     Handler handler;
     Runnable runnable;
-    double latitude;
+
+    static double longitude=77.11;
+    static double latitude=28.75;
+
     boolean cont;
-    ArrayList<HospitalInfo> completeList;
+    static ArrayList<HospitalInfo> completeList;
     ProgressDialog mProgressDialog;
 
     boolean shouldAdd(String coord){
@@ -55,16 +58,17 @@ public class MainActivity extends AppCompatActivity {
         cont=true;
         completeList=new ArrayList<>();
         b_get = (Button)findViewById(R.id.get);
-        gps = new TrackGPS(MainActivity.this);
-        if(gps.canGetLocation()){
-            longitude = gps.getLongitude();
-            latitude = gps .getLatitude();
-//                    Toast.makeText(getApplicationContext(),"Longitude:"+Double.toString(longitude)+"\nLatitude:"+Double.toString(latitude),Toast.LENGTH_SHORT).show();
-        }
-        else
-        {
-            gps.showSettingsAlert();
-        }
+       // Button b_check= (Button)findViewById(R.id.check);
+//        gps = new TrackGPS(MainActivity.this);
+//        if(gps.canGetLocation()){
+//            longitude = gps.getLongitude();
+//            latitude = gps .getLatitude();
+////                    Toast.makeText(getApplicationContext(),"Longitude:"+Double.toString(longitude)+"\nLatitude:"+Double.toString(latitude),Toast.LENGTH_SHORT).show();
+//        }
+//        else
+//        {
+//            gps.showSettingsAlert();
+//        }
 
         b_get.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void run() {
 
-                                Intent i=new Intent();
+                                Intent i=new Intent(MainActivity.this,MapsActivity.class);
                                 startActivity(i);
                             }
                         };
@@ -134,6 +138,14 @@ public class MainActivity extends AppCompatActivity {
 
 
         });
+     /*   b_check.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent i= new Intent(this,MapsActivity.class);
+                startActivity(i);
+
+            }
+        }); */
     }
 
     @Override
