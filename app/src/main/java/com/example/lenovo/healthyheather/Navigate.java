@@ -7,18 +7,17 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class Navigate extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
+        setContentView(R.layout.activity_navigate);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -44,15 +43,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(curr).title("You are here!").alpha(0.7f));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curr,15));
 
-
-        for(int i=0;i<MainActivity.completeList.size();i++)
-        {
-            String coord=MainActivity.completeList.get(i).Location_Coordinates;
-            String ll[]= coord.split(",");
-            LatLng plot= new LatLng(Double.parseDouble(ll[0]),Double.parseDouble(ll[1]));
-            mMap.addMarker(new MarkerOptions().position(plot).title(MainActivity.completeList.get(i).Hospital_Name).alpha(0.7f).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(plot));
-
-        }
+        
     }
 }
