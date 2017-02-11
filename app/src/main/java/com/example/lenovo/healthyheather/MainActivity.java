@@ -24,13 +24,32 @@ public class MainActivity extends AppCompatActivity {
     private TrackGPS gps;
     double longitude;
     double latitude;
+    boolean cont;
+    ArrayList<HospitalInfo> completeList;
     ProgressDialog mProgressDialog;
+
+    boolean shouldAdd(String coord){
+        String[] tmp=coord.split(",");
+        try {
+            Double lat = Double.parseDouble(tmp[0]);
+            Double y = Double.parseDouble(tmp[1]);
+            boolean poss = true;
+            if (Math.abs(lat - latitude) > 0.8)
+                poss = false;
+            if (Math.abs(y - longitude) > 0.8)
+                poss = false;
+            return poss;
+        }catch(Exception e){
+            return false;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        cont=true;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        completeList=new ArrayList<>();
         b_get = (Button)findViewById(R.id.get);
         gps = new TrackGPS(MainActivity.this);
         if(gps.canGetLocation()){
@@ -51,31 +70,42 @@ public class MainActivity extends AppCompatActivity {
                 mProgressDialog.setTitle("Fetching Nearest Hospitals");
                 mProgressDialog.setMessage("Loading...");
                 mProgressDialog.show();
+                int offset=0;
+                while(cont && offset<100){
+                    Call<JsonReturn> getHospitalListCall= ApiClient.getApiInterface()
+                            .getHospitalList(ContractAPIConstants.API_KEY,ContractAPIConstants.RESOURCE_ID,offset);
+                    getHospitalListCall.enqueue(new Callback<JsonReturn>() {
+                        @Override
+                        public void onResponse(Call<JsonReturn> call, Response<JsonReturn> response) {
+                            mProgressDialog.dismiss();
+                            if(response.isSuccessful()&&response.body().hospitalsArrayList!=null&&response.body().hospitalsArrayList.size()>0){
+                                ArrayList<HospitalInfo> myList=response.body().hospitalsArrayList;
+                                for(HospitalInfo cur:myList) {
+                                    if(!cur.Location_Coordinates.equals("NA"))
+                                        if(shouldAdd(cur.Location_Coordinates))
+                                            completeList.add(cur);
+                                }
 
-                Call<JsonReturn> getHospitalListCall= ApiClient.getApiInterface().getHospitalListByState(ContractAPIConstants.API_KEY,ContractAPIConstants.RESOURCE_ID,"Gujarat");
-                getHospitalListCall.enqueue(new Callback<JsonReturn>() {
-                    @Override
-                    public void onResponse(Call<JsonReturn> call, Response<JsonReturn> response) {
-                        mProgressDialog.dismiss();
-                        if(response.isSuccessful()&&response.body().hospitalsArrayList.size()>0){
-                            ArrayList<HospitalInfo> myList=response.body().hospitalsArrayList;
-
-                            Toast.makeText(MainActivity.this, myList.get(0).District, Toast.LENGTH_SHORT).show();
-                            Log.i("phase1", myList.get(0).Hospital_Name);
-
-                        }else{
-                            Log.i("phase1", "hospital search unsuccess");
-                            Toast.makeText(MainActivity.this, "data for hospital in "+"Gujarat"+" state is currently unavailable, try after some time", Toast.LENGTH_LONG).show();
+//                            Toast.makeText(MainActivity.this, myList.get(0).District, Toast.LENGTH_SHORT).show();
+//                            Log.i("phase1", myList.get(0).Hospital_Name);
+                            }else{
+                                cont=false;
+//                            Log.i("phase1", "hospital search unsuccess");
+//                            Toast.makeText(MainActivity.this, "data for hospital in "+"Gujarat"+" state is currently unavailable, try after some time", Toast.LENGTH_LONG).show();
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<JsonReturn> call, Throwable t) {
-                        mProgressDialog.dismiss();
-                        Log.i("phase1", "Hospital search failed");
-                        Toast.makeText(MainActivity.this, "Please check ur Internet Connection, Hospital List couldn't be loaded", Toast.LENGTH_LONG).show();
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<JsonReturn> call, Throwable t) {
+                            cont=false;
+//                        Log.i("phase1", "Hospital search failed");
+//                        Toast.makeText(MainActivity.this, "Please check ur Internet Connection, Hospital List couldn't be loaded", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    ++offset;
+                }
+                mProgressDialog.dismiss();
+                Toast.makeText(MainActivity.this, "num= "+completeList.size(), Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -88,7 +118,4 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
-//    }
 }

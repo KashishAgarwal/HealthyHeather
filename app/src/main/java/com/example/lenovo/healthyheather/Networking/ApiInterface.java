@@ -12,7 +12,7 @@ import retrofit2.http.Query;
 public interface ApiInterface {
 
     @GET("resource.json")
-    Call<JsonReturn> getHospitalListByState(@Query("api-key") String API_KEY,
+    Call<JsonReturn> getHospitalList(@Query("api-key") String API_KEY,
                                            @Query("resource_id") String RESOURCE_ID,
-                                           @Query("filters[State]") String stateName);
+                                           @Query("offset") int offs);
 }
