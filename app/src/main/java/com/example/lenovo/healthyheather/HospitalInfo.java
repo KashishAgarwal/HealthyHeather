@@ -1,10 +1,12 @@
 package com.example.lenovo.healthyheather;
 
+import java.io.Serializable;
+
 /**
  * Created by lenovo on 11-02-2017.
  */
 
-public class HospitalInfo {
+public class HospitalInfo implements Serializable {
     public String Location_Coordinates;
     public String Location;
     public  String Hospital_Name;

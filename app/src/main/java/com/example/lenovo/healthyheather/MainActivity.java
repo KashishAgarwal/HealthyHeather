@@ -28,27 +28,38 @@ public class MainActivity extends AppCompatActivity {
     Handler handler;
     Runnable runnable;
 
-    static double longitude=77.11;
-    static double latitude=28.75;
+    static double longitude;
+    static double latitude;
 
     boolean cont;
     static ArrayList<HospitalInfo> completeList;
     ProgressDialog mProgressDialog;
 
-    boolean shouldAdd(String coord){
-        String[] tmp=coord.split(",");
+    public static Double[] getCoordinatesFromString(String coord){
+
+        Double ret[]={0.00,0.00};
         try {
-            Double lat = Double.parseDouble(tmp[0]);
-            Double y = Double.parseDouble(tmp[1]);
+            String[] tmp=coord.split(",");
+            ret[0] = Double.parseDouble(tmp[0]);
+            ret[1] = Double.parseDouble(tmp[1]);
+        }catch(Exception e){
+
+        }
+        return ret;
+    }
+
+    boolean shouldAdd(String coord){
+        Double[] tmp=getCoordinatesFromString(coord);
+
+            Double lat = tmp[0];
+            Double y = tmp[1];
             boolean poss = true;
             if (Math.abs(lat - latitude) > 0.8)
                 poss = false;
             if (Math.abs(y - longitude) > 0.8)
                 poss = false;
             return poss;
-        }catch(Exception e){
-            return false;
-        }
+
     }
 
     @Override
@@ -59,16 +70,16 @@ public class MainActivity extends AppCompatActivity {
         completeList=new ArrayList<>();
         b_get = (Button)findViewById(R.id.get);
        // Button b_check= (Button)findViewById(R.id.check);
-//        gps = new TrackGPS(MainActivity.this);
-//        if(gps.canGetLocation()){
-//            longitude = gps.getLongitude();
-//            latitude = gps .getLatitude();
-////                    Toast.makeText(getApplicationContext(),"Longitude:"+Double.toString(longitude)+"\nLatitude:"+Double.toString(latitude),Toast.LENGTH_SHORT).show();
-//        }
-//        else
-//        {
-//            gps.showSettingsAlert();
-//        }
+        gps = new TrackGPS(MainActivity.this);
+        if(gps.canGetLocation()){
+            longitude = gps.getLongitude();
+            latitude = gps .getLatitude();
+//                    Toast.makeText(getApplicationContext(),"Longitude:"+Double.toString(longitude)+"\nLatitude:"+Double.toString(latitude),Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            gps.showSettingsAlert();
+        }
 
         b_get.setOnClickListener(new View.OnClickListener() {
             @Override

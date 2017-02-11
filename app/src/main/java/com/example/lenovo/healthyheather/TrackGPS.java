@@ -18,7 +18,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class TrackGPS extends Service implements LocationListener {
-    private final Context mContext;
+    public TrackGPS() {
+    }
+
+    private Context mContext;
 
 
     boolean checkGPS = false;

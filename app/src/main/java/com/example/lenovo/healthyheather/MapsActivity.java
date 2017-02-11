@@ -1,5 +1,6 @@
 package com.example.lenovo.healthyheather;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
@@ -9,9 +10,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,GoogleMap.OnInfoWindowClickListener {
 
     private GoogleMap mMap;
 
@@ -50,9 +52,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             String coord=MainActivity.completeList.get(i).Location_Coordinates;
             String ll[]= coord.split(",");
             LatLng plot= new LatLng(Double.parseDouble(ll[0]),Double.parseDouble(ll[1]));
-            mMap.addMarker(new MarkerOptions().position(plot).title(MainActivity.completeList.get(i).Hospital_Name).alpha(0.7f).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mMap.addMarker(new MarkerOptions().position(plot).title(String.valueOf(i+1)+" "+MainActivity.completeList.get(i).Hospital_Name).alpha(0.7f).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(plot));
 
         }
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        String jj[]=marker.getTitle().split(" ");
+        int index=Integer.parseInt(jj[0]);
+        --index;
+        Intent i=new Intent(MapsActivity.this,HospitalDetailActivity.class);
+        i.putExtra("hospital",MainActivity.completeList.get(index));
+        startActivity(i);
     }
 }
