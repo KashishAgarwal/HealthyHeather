@@ -3,6 +3,7 @@ package com.example.lenovo.healthyheather;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -13,7 +14,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,GoogleMap.OnInfoWindowClickListener {
+public class MapsActivity extends AppCompatActivity
+        implements OnMapReadyCallback,
+        GoogleMap.OnInfoWindowClickListener {
 
     private GoogleMap mMap;
 
@@ -43,8 +46,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Add a marker in Sydney and move the camera
         LatLng curr = new LatLng(MainActivity.latitude, MainActivity.longitude);
+
         mMap.addMarker(new MarkerOptions().position(curr).title("You are here!").alpha(0.7f));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curr,15));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curr,10));
 
 
         for(int i=0;i<MainActivity.completeList.size();i++)
@@ -56,6 +60,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.moveCamera(CameraUpdateFactory.newLatLng(plot));
 
         }
+        mMap.setOnInfoWindowClickListener(this);
     }
 
     @Override
