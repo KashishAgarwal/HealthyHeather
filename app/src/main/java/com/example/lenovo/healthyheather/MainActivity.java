@@ -1,6 +1,8 @@
 package com.example.lenovo.healthyheather;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     private Button b_get;
     private TrackGPS gps;
     double longitude;
+    Handler handler;
+    Runnable runnable;
     double latitude;
     boolean cont;
     ArrayList<HospitalInfo> completeList;
@@ -46,9 +50,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        cont=true;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        cont=true;
         completeList=new ArrayList<>();
         b_get = (Button)findViewById(R.id.get);
         gps = new TrackGPS(MainActivity.this);
@@ -66,10 +70,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                Log.i("getLocation","is "+latitude+", "+longitude);
                 mProgressDialog = new ProgressDialog(MainActivity.this);
                 mProgressDialog.setTitle("Fetching Nearest Hospitals");
                 mProgressDialog.setMessage("Loading...");
-                mProgressDialog.show();
+
                 int offset=0;
                 while(cont && offset<100){
                     Call<JsonReturn> getHospitalListCall= ApiClient.getApiInterface()
@@ -77,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                     getHospitalListCall.enqueue(new Callback<JsonReturn>() {
                         @Override
                         public void onResponse(Call<JsonReturn> call, Response<JsonReturn> response) {
-                            mProgressDialog.dismiss();
+
                             if(response.isSuccessful()&&response.body().hospitalsArrayList!=null&&response.body().hospitalsArrayList.size()>0){
                                 ArrayList<HospitalInfo> myList=response.body().hospitalsArrayList;
                                 for(HospitalInfo cur:myList) {
@@ -104,10 +109,30 @@ public class MainActivity extends AppCompatActivity {
                     });
                     ++offset;
                 }
-                mProgressDialog.dismiss();
+
                 Toast.makeText(MainActivity.this, "num= "+completeList.size(), Toast.LENGTH_SHORT).show();
 
-            }
+                handler = new Handler();
+
+
+                        // TODO Auto-generated method stub
+
+                        runnable = new Runnable() {
+
+                            @Override
+                            public void run() {
+
+                                Intent i=new Intent();
+                                startActivity(i);
+                            }
+                        };
+                        handler.postDelayed(runnable, 7000);
+
+                    }
+
+
+
+
         });
     }
 
