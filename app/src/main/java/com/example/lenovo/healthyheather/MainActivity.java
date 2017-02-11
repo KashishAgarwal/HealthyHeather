@@ -74,11 +74,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+
                 Log.i("getLocation","is "+latitude+", "+longitude);
                 mProgressDialog = new ProgressDialog(MainActivity.this);
                 mProgressDialog.setTitle("Fetching Nearest Hospitals");
                 mProgressDialog.setMessage("Loading...");
-
+                mProgressDialog.show();
                 int offset=0;
                 while(cont && offset<100){
                     Call<JsonReturn> getHospitalListCall= ApiClient.getApiInterface()
@@ -125,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
                             @Override
                             public void run() {
-
+                                mProgressDialog.dismiss();
                                 Intent i=new Intent(MainActivity.this,MapsActivity.class);
                                 startActivity(i);
                             }
